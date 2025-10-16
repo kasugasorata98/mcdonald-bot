@@ -1,0 +1,2 @@
+[19:34:59] CLI started. Type 'help' for commands.
+[19:34:59] Commands: help | order normal | order vip | +bot | -bot | state | quit
