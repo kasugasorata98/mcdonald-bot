@@ -113,9 +113,9 @@ export class BotController {
 
   private onCompleted(co: CompletedOrder): void {
     this.completed.push(co);
-    this.dispatchOrders();
     const type = co.isVip ? OrderPriority.VIP : OrderPriority.NORMAL;
     this.logger?.info(`Completed ${type} order #${co.id} by bot #${co.botId}`);
+    this.dispatchOrders();
   }
 
   private onBotStopped(botId: number, orderReturned?: Order): void {

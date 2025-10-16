@@ -2,8 +2,9 @@ import { BotController } from "./bot";
 import * as readline from "readline";
 import { executeCommand } from "./cli/commands";
 import { createLogger } from "./helpers/logger";
+import { Config } from "./config";
 
-const logger = createLogger();
+const logger = createLogger(Config.outputPath);
 const controller = new BotController(logger);
 
 const rl = readline.createInterface({

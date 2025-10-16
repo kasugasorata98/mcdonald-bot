@@ -2,15 +2,14 @@ import { CommandContext, CommandHandler } from "./types";
 import { handleOrder } from "./order";
 import { handleAddBot, handleRemoveBot } from "./bots";
 import { handleState } from "./state";
+import { CMD_NORMAL, CMD_VIP, HELP_TEXT } from "../../constants/commands";
 
 export const registry: Record<string, CommandHandler> = {
   state: handleState,
   "+bot": handleAddBot,
   "-bot": handleRemoveBot,
-  order: handleOrder,
-  create: handleOrder,
-  new: (ctx) => handleOrder(ctx, ["order", "normal"]),
-  vip: (ctx) => handleOrder(ctx, ["order", "vip"]),
+  [CMD_NORMAL]: handleOrder,
+  [CMD_VIP]: handleOrder,
   add: (ctx, parts) => {
     if (parts[1] === "bot") return handleAddBot(ctx, parts);
     ctx.log("Usage: add bot");
@@ -20,9 +19,7 @@ export const registry: Record<string, CommandHandler> = {
     ctx.log("Usage: remove bot");
   },
   help: (ctx) => {
-    ctx.log(
-      "Commands: help | order normal | order vip | +bot | -bot | state | quit"
-    );
+    ctx.log(HELP_TEXT);
   },
 };
 
