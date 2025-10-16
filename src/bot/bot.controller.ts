@@ -1,9 +1,9 @@
-import { PendingQueue } from "../../helpers/pending-queue";
+import { PendingQueue } from "../helpers/pending-queue";
 import { BotService } from "./bot.service";
-import { Order } from "../../entities/order.entity";
-import { CompletedOrder } from "../../entities/completed-order.entity";
-import { ControllerState } from "../../entities/controller-state.entity";
-import type { Logger } from "../../helpers/logger";
+import { Order } from "../entities/order.entity";
+import { CompletedOrder } from "../entities/completed-order.entity";
+import { ControllerState } from "../entities/controller-state.entity";
+import type { Logger } from "../helpers/logger";
 
 export class BotController {
   private readonly queue = new PendingQueue();

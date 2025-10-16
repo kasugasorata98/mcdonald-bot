@@ -1,5 +1,5 @@
-import { Order } from "../../entities/order.entity";
-import { CompletedOrder } from "../../entities/completed-order.entity";
+import { Order } from "../entities/order.entity";
+import { CompletedOrder } from "../entities/completed-order.entity";
 
 export type BotCallbacks = {
   onCompleted: (completed: CompletedOrder) => void;

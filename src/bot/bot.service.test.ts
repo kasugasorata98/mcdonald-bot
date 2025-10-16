@@ -1,5 +1,5 @@
 import { BotService } from "./bot.service";
-import { Order } from "../../entities/order.entity";
+import { Order } from "../entities/order.entity";
 
 jest.setTimeout(15000);
 
@@ -35,5 +35,3 @@ describe("BotService", () => {
     expect(returned?.id).toBe(2);
   });
 });
-
-
