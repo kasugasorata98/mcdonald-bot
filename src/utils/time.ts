@@ -1,9 +1,10 @@
-import moment from "moment";
-
 export function formatTime(date: Date): string {
-  return moment(date).format("HH:mm:ss");
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  const ss = String(date.getSeconds()).padStart(2, "0");
+  return `${hh}:${mm}:${ss}`;
 }
 
 export function nowTime(): string {
-  return moment().format("HH:mm:ss");
+  return formatTime(new Date());
 }
