@@ -41,7 +41,7 @@ npm run build
   done
 
   # Allow enough time to process queue (each job ~10s)
-  sleep 120
+  sleep 150
   echo "quit"
 } | node dist/index.js
 echo "CLI finished."
