@@ -59,6 +59,19 @@ describe("BotController", () => {
     expect(c.getCompleted().length).toBe(1);
   });
 
+  test("single bot does not overlap jobs (second starts after first completes)", async () => {
+    const c = new BotController();
+    c.createNormalOrder();
+    c.createNormalOrder();
+    c.addBot(200);
+    await new Promise((res) => setTimeout(res, 250));
+    const completed = c.getCompleted();
+    expect(completed.length).toBe(1);
+    // Wait for the second to finish
+    await new Promise((res) => setTimeout(res, 250));
+    expect(c.getCompleted().length).toBe(2);
+  });
+
   test("removing a busy bot returns the order to pending", async () => {
     const c = new BotController();
     c.createNormalOrder();
