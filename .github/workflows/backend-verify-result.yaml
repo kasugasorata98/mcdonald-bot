@@ -2,9 +2,9 @@ name: backend-verify-result
 
 on:
   workflow_dispatch:
-  # pull_request:
-  #   types: [opened, synchronize, reopened, edited]
-  #   branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main]
 
 jobs:
   verify-result:
