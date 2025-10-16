@@ -3,15 +3,16 @@ import { BotService } from "./bot.service";
 import { Order } from "../../entities/order.entity";
 import { CompletedOrder } from "../../entities/completed-order.entity";
 import { ControllerState } from "../../entities/controller-state.entity";
+import type { Logger } from "../../helpers/logger";
 
 export class BotController {
   private readonly queue = new PendingQueue();
   private readonly bots = new Map<number, BotService>();
   private nextOrderId = 1;
   private readonly completed: CompletedOrder[] = [];
-  private logger?: (message: string) => void;
+  private logger?: Logger;
 
-  constructor(logger?: (message: string) => void) {
+  constructor(logger?: Logger) {
     this.logger = logger;
   }
 
@@ -22,7 +23,7 @@ export class BotController {
       createdAt: new Date(),
     };
     this.queue.enqueue(order);
-    this.logger?.(`Enqueued NORMAL order #${order.id}`);
+    this.logger?.info(`Enqueued NORMAL order #${order.id}`);
     this.kickBots();
     return order;
   }
@@ -41,7 +42,7 @@ export class BotController {
       }
     }
     this.queue.enqueue(order);
-    this.logger?.(`Enqueued VIP order #${order.id}`);
+    this.logger?.info(`Enqueued VIP order #${order.id}`);
     this.kickBots();
     return order;
   }
@@ -58,21 +59,21 @@ export class BotController {
       processingMs
     );
     this.bots.set(id, bot);
-    this.logger?.(`Added bot #${id}`);
+    this.logger?.info(`Added bot #${id}`);
     this.kickBots();
     return id;
   }
 
   removeBot(): number | undefined {
     if (this.bots.size === 0) {
-      this.logger?.("No bots available to remove");
+      this.logger?.info("No bots available to remove");
       return undefined;
     }
     const newestId = Math.max(...this.bots.keys());
     const bot = this.bots.get(newestId)!;
     bot.stop();
     this.bots.delete(newestId);
-    this.logger?.(`Removed bot #${newestId}`);
+    this.logger?.info(`Removed bot #${newestId}`);
     return newestId;
   }
 
@@ -100,7 +101,7 @@ export class BotController {
           const started = bot.tryStart(next);
           if (started) {
             const type = next.isVip ? "VIP" : "NORMAL";
-            this.logger?.(
+            this.logger?.info(
               `Processing ${type} order #${next.id} on bot #${bot.id}`
             );
           }
@@ -113,14 +114,14 @@ export class BotController {
     this.completed.push(co);
     this.kickBots();
     const type = co.isVip ? "VIP" : "NORMAL";
-    this.logger?.(`Completed ${type} order #${co.id} by bot #${co.botId}`);
+    this.logger?.info(`Completed ${type} order #${co.id} by bot #${co.botId}`);
   }
 
   private onBotStopped(botId: number, orderReturned?: Order): void {
     if (orderReturned) {
       this.queue.enqueue(orderReturned);
       const type = orderReturned.isVip ? "VIP" : "NORMAL";
-      this.logger?.(`Returned ${type} order #${orderReturned.id} to queue`);
+      this.logger?.info(`Returned ${type} order #${orderReturned.id} to queue`);
     }
   }
 }

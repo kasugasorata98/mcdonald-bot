@@ -1,10 +1,9 @@
 import { CommandContext, CommandHandler } from "./types";
 import { handleOrder } from "./order";
 import { handleAddBot, handleRemoveBot } from "./bots";
-import { handleHelp, handleState } from "./state";
+import { handleState } from "./state";
 
 export const registry: Record<string, CommandHandler> = {
-  help: handleHelp,
   state: handleState,
   "+bot": handleAddBot,
   "-bot": handleRemoveBot,
@@ -20,6 +19,11 @@ export const registry: Record<string, CommandHandler> = {
     if (parts[1] === "bot") return handleRemoveBot(ctx, parts);
     ctx.log("Usage: remove bot");
   },
+  help: (ctx) => {
+    ctx.log(
+      "Commands: help | order normal | order vip | +bot | -bot | state | quit"
+    );
+  },
 };
 
 export function executeCommand(ctx: CommandContext, input: string): void {
@@ -27,7 +31,10 @@ export function executeCommand(ctx: CommandContext, input: string): void {
   if (parts.length === 0) return;
   const cmd = parts[0];
   if (cmd === "quit" || cmd === "exit") {
-    ctx.printState("Final state");
+    const s = ctx.controller.getState();
+    ctx.log(
+      `Final state | PENDING vip=${s.pendingVipCount} normal=${s.pendingNormalCount} | BOTS active=${s.activeBotIds.length} busy=${s.busyBotIds.length} | COMPLETE=${s.completedCount}`
+    );
     // eslint-disable-next-line no-process-exit
     setTimeout(() => process.exit(0), 200);
     return;

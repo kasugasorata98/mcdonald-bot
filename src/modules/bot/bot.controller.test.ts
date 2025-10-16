@@ -23,7 +23,7 @@ describe("BotController", () => {
 
   test("removing when no bots logs message and returns undefined", () => {
     const logs: string[] = [];
-    const c = new BotController((m) => logs.push(m));
+    const c = new BotController({ info: (m: string) => logs.push(m) });
     const removed = c.removeBot();
     expect(removed).toBeUndefined();
     expect(logs.some((l) => l.includes("No bots available to remove"))).toBe(
