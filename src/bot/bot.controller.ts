@@ -1,8 +1,9 @@
 import { PendingQueue } from "../helpers/pending-queue";
 import { BotService } from "./bot.service";
-import { Order } from "../entities/order.entity";
-import { CompletedOrder } from "../entities/completed-order.entity";
-import { ControllerState } from "../entities/controller-state.entity";
+import { Order } from "../entities/order.type";
+import { CompletedOrder } from "../entities/completed-order.type";
+import { ControllerState } from "../entities/controller-state.type";
+import { OrderPriority } from "../entities/order-priority.enum";
 import type { Logger } from "../helpers/logger";
 
 export class BotController {
@@ -24,7 +25,7 @@ export class BotController {
     };
     this.queue.enqueue(order);
     this.logger?.info(`Enqueued NORMAL order #${order.id}`);
-    this.kickBots();
+    this.dispatchOrders();
     return order;
   }
 
@@ -43,7 +44,7 @@ export class BotController {
     }
     this.queue.enqueue(order);
     this.logger?.info(`Enqueued VIP order #${order.id}`);
-    this.kickBots();
+    this.dispatchOrders();
     return order;
   }
 
@@ -60,7 +61,7 @@ export class BotController {
     );
     this.bots.set(id, bot);
     this.logger?.info(`Added bot #${id}`);
-    this.kickBots();
+    this.dispatchOrders();
     return id;
   }
 
@@ -93,14 +94,14 @@ export class BotController {
     return [...this.completed];
   }
 
-  private kickBots(): void {
+  private dispatchOrders(): void {
     for (const bot of this.bots.values()) {
       if (!bot.isBusy()) {
         const next = this.queue.dequeue();
         if (next) {
           const started = bot.tryStart(next);
           if (started) {
-            const type = next.isVip ? "VIP" : "NORMAL";
+            const type = next.isVip ? OrderPriority.VIP : OrderPriority.NORMAL;
             this.logger?.info(
               `Processing ${type} order #${next.id} on bot #${bot.id}`
             );
@@ -112,16 +113,20 @@ export class BotController {
 
   private onCompleted(co: CompletedOrder): void {
     this.completed.push(co);
-    this.kickBots();
-    const type = co.isVip ? "VIP" : "NORMAL";
+    this.dispatchOrders();
+    const type = co.isVip ? OrderPriority.VIP : OrderPriority.NORMAL;
     this.logger?.info(`Completed ${type} order #${co.id} by bot #${co.botId}`);
   }
 
   private onBotStopped(botId: number, orderReturned?: Order): void {
     if (orderReturned) {
       this.queue.enqueue(orderReturned);
-      const type = orderReturned.isVip ? "VIP" : "NORMAL";
-      this.logger?.info(`Returned ${type} order #${orderReturned.id} to queue`);
+      const type = orderReturned.isVip
+        ? OrderPriority.VIP
+        : OrderPriority.NORMAL;
+      this.logger?.info(
+        `Bot #${botId} stopped and returned ${type} order #${orderReturned.id} to queue`
+      );
     }
   }
 }

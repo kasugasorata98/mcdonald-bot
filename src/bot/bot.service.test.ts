@@ -1,5 +1,5 @@
 import { BotService } from "./bot.service";
-import { Order } from "../entities/order.entity";
+import { Order } from "../entities/order.type";
 
 jest.setTimeout(15000);
 
