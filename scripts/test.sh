@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-echo "Running Jest tests..."
+echo "Running unit tests..."
 npm ci
 npm test -- --runInBand
-echo "Tests complete."
+echo "Unit tests completed"

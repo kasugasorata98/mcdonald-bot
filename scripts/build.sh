@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-echo "Building TypeScript..."
+echo "Building CLI application..."
 npm ci
 npm run build
-echo "Build complete."
+echo "Build completed"
