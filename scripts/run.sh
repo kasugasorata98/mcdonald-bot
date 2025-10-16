@@ -2,7 +2,6 @@
 
 echo "Running CLI..."
 npm run build
-# Always pipe a default scenario to stdin (suitable for CI/non-interactive)
 {
   # Initial mix of orders
   echo "normal order"
@@ -43,7 +42,7 @@ npm run build
     echo "vip order"
   done
 
-  # Allow enough time to process queue (each job ~10s)
+  # Allow enough time to process queue
   sleep 60
   echo "state"
   echo "quit"

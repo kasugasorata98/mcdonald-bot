@@ -2,14 +2,14 @@ import { CommandContext, CommandHandler } from "./types";
 import { handleOrder } from "./order";
 import { handleAddBot, handleRemoveBot } from "./bots";
 import { handleState } from "./state";
-import { CMD_NORMAL, CMD_VIP, HELP_TEXT } from "../../constants/commands";
+import { Constants } from "../../constants/commands";
 
 export const registry: Record<string, CommandHandler> = {
-  state: handleState,
-  "+bot": handleAddBot,
-  "-bot": handleRemoveBot,
-  [CMD_NORMAL]: handleOrder,
-  [CMD_VIP]: handleOrder,
+  [Constants.CMD_STATE]: handleState,
+  [Constants.CMD_ADD_BOT]: handleAddBot,
+  [Constants.CMD_REMOVE_BOT]: handleRemoveBot,
+  [Constants.CMD_NORMAL]: handleOrder,
+  [Constants.CMD_VIP]: handleOrder,
   add: (ctx, parts) => {
     if (parts[1] === "bot") return handleAddBot(ctx, parts);
     ctx.log("Usage: add bot");
@@ -18,8 +18,8 @@ export const registry: Record<string, CommandHandler> = {
     if (parts[1] === "bot") return handleRemoveBot(ctx, parts);
     ctx.log("Usage: remove bot");
   },
-  help: (ctx) => {
-    ctx.log(HELP_TEXT);
+  [Constants.CMD_HELP]: (ctx) => {
+    ctx.log(Constants.HELP_TEXT);
   },
 };
 
@@ -27,7 +27,7 @@ export function executeCommand(ctx: CommandContext, input: string): void {
   const parts = input.trim().toLowerCase().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return;
   const cmd = parts[0];
-  if (cmd === "quit" || cmd === "exit") {
+  if (cmd === Constants.CMD_QUIT || cmd === Constants.CMD_EXIT) {
     const s = ctx.controller.getState();
     ctx.log(
       `Final state | PENDING vip=${s.pendingVipCount} normal=${s.pendingNormalCount} | BOTS active=${s.activeBotIds.length} busy=${s.busyBotIds.length} | COMPLETE=${s.completedCount}`
