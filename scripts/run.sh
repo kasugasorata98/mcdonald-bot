@@ -9,7 +9,10 @@ npm run build
   echo "normal order"
   echo "vip order"
 
-  # Spin up two bots
+  # Spin up 5 bots
+  echo "+bot"
+  echo "+bot"
+  echo "+bot"
   echo "+bot"
   echo "+bot"
 
